@@ -1088,6 +1088,8 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
 
     if act:
         Conv.default_act = eval(act)  # redefine default activation, i.e. Conv.default_act = torch.nn.SiLU()
+        ConvTranspose.default_act = eval(act)  # redefine default activation, i.e. ConvTranspose.default_act = torch.nn.SiLU()
+        RepConv.default_act = eval(act)  # redefine default activation, i.e. RepConv.default_act = torch.nn.SiLU()
         if verbose:
             LOGGER.info(f"{colorstr('activation:')} {act}")  # print
 
@@ -1099,6 +1101,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
         {
             Classify,
             Conv,
+            RepConv,
             ConvTranspose,
             GhostConv,
             Bottleneck,
