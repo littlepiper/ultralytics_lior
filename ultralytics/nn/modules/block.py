@@ -16,6 +16,7 @@ __all__ = (
     "HGStem",
     "SPP",
     "SPPF",
+    "SPPFConv"
     "C1",
     "C2",
     "C3",
@@ -222,6 +223,26 @@ class SPPF(nn.Module):
         y = [self.cv1(x)]
         y.extend(self.m(y[-1]) for _ in range(3))
         return self.cv2(torch.cat(y, 1))
+
+
+class SPPFConv(SPPF):
+    """C3 module with cross-convolutions."""
+
+    def __init__(self, c1, c2, k=5):
+        """
+        Initialize C3 module with cross-convolutions.
+
+        Args:
+            c1 (int): Input channels.
+            c2 (int): Output channels.
+            n (int): Number of Bottleneck blocks.
+            shortcut (bool): Whether to use shortcut connections.
+            g (int): Groups for convolutions.
+            e (float): Expansion ratio.
+        """
+        super().__init__(c1, c2, k)
+        c_ = c1 // 2  # hidden channels
+        self.m = Conv(c_, c_, k, 1)
 
 
 class C1(nn.Module):

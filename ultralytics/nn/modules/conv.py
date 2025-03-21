@@ -390,7 +390,7 @@ class RepConv(nn.Module):
 
     default_act = nn.SiLU()  # default activation
 
-    def __init__(self, c1, c2, k=3, s=1, p=1, g=1, d=1, act=True, bn=False, deploy=False):
+    def __init__(self, c1, c2, k=3, s=1, p=1, g=1, d=1, act=True, bn=True, deploy=False):
         """
         Initialize RepConv module with given parameters.
 
