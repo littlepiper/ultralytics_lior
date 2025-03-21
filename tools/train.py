@@ -12,7 +12,7 @@ def make_parser():
     parser.add_argument("--data", type=str, default="dms_action.yaml", help="Dataset configuration file")
 
     # Training parameters
-    parser.add_argument("--time", type=int, default=48, help="Training duration (hours)")
+    parser.add_argument("--time", type=float, default=None, help="Training duration (hours)")
     parser.add_argument("--resume", action="store_true", help="Resume training from the last checkpoint")
     parser.add_argument("--epochs", type=int, default=100, help="Total number of training epochs")
     parser.add_argument("--batch", type=int, default=16, help="Batch size")
@@ -21,7 +21,7 @@ def make_parser():
     parser.add_argument("--multi_scale", action="store_true", help="Enable multi-scale training")
     parser.add_argument("--cos_lr", action="store_true", help="Enable cosine learning rate scheduler")
     parser.add_argument("--bgr", type=float, default=0, help="Background augmentation ratio")
-    parser.add_argument("--warmup_epochs", type=int, default=0, help="Number of warmup epochs")
+    parser.add_argument("--warmup_epochs", type=int, default=3.0, help="Number of warmup epochs")
     parser.add_argument("--lr0", type=float, default=0.01, help="Initial learning rate")
     parser.add_argument("--lrf", type=float, default=0.01, help="Final learning rate")
     parser.add_argument("--optimizer", type=str, choices=["SGD", "Adam", "AdamW"], default="SGD", help="Optimizer type")
