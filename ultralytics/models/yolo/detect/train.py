@@ -100,6 +100,12 @@ class DetectionTrainer(BaseTrainer):
             (dict): Preprocessed batch with normalized images.
         """
         batch["img"] = batch["img"].to(self.device, non_blocking=True).float() / 255
+
+        if self.args.img_mean is not None:
+            batch["img"] = batch["img"] - torch.tensor(self.args.img_mean, device=self.device).view(1, 3, 1, 1)
+        if self.args.img_std is not None:
+            batch["img"] = batch["img"] / torch.tensor(self.args.img_std, device=self.device).view(1, 3, 1, 1)
+
         if self.args.multi_scale:
             imgs = batch["img"]
             sz = (

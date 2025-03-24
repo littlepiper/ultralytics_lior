@@ -22,12 +22,16 @@ def make_parser():
     parser.add_argument("--device", type=str, default="0", help="Training device (GPU ID or CPU)")
     parser.add_argument("--multi_scale", action="store_true", help="Enable multi-scale training")
     parser.add_argument("--weighted", action="store_true", help="Enable weighted image sampling based on class distribution")
-    parser.add_argument("--cos_lr", action="store_true", help="Enable cosine learning rate scheduler")
+    parser.add_argument("--img-mean", type=str, default="0.485,0.456,0.406", help="Mean values for image normalization")
+    parser.add_argument("--img-std", type=str, default="0.229,0.224,0.225", help="Std values for image normalization")
+    
     parser.add_argument("--bgr", type=float, default=0, help="Background augmentation ratio")
+    
     parser.add_argument("--warmup_epochs", type=int, default=3.0, help="Number of warmup epochs")
     parser.add_argument("--lr0", type=float, default=0.01, help="Initial learning rate")
     parser.add_argument("--lrf", type=float, default=0.01, help="Final learning rate")
     parser.add_argument("--optimizer", type=str, choices=["SGD", "Adam", "AdamW"], default="SGD", help="Optimizer type")
+    parser.add_argument("--cos_lr", action="store_true", help="Enable cosine learning rate scheduler")
     parser.add_argument("--close_mosaic", type=int, default=10, help="Disable mosaic augmentation after this number of epochs")
     
     # Logging and output parameters
@@ -64,16 +68,35 @@ def main(args):
         name=f"{args.dir_name}_{args.model_name}",
         multi_scale=args.multi_scale,
         weighted=args.weighted,
-        cos_lr=args.cos_lr,
+        img_mean=args.img_mean,
+        img_std=args.img_std,
         bgr=args.bgr,
         warmup_epochs=args.warmup_epochs,
         lr0=args.lr0,
         lrf=args.lrf,
         optimizer=args.optimizer,
+        cos_lr=args.cos_lr,
         close_mosaic=args.close_mosaic
     )
 
 
 if __name__ == '__main__':
     args = make_parser().parse_args()
+
+    def _process_norm_param(param_str, param_name):
+        try:
+            if param_str.lower() == 'none':
+                return None
+            parts = [s.strip() for s in param_str.split(',')]
+            if len(parts) == 1:
+                return [float(parts[0])] * 3
+            elif len(parts) == 3:
+                return [float(p) for p in parts]
+            else:
+                raise ValueError(f"Invalid {param_name} format: requires 1 or 3 values")
+        except ValueError as e:
+            raise argparse.ArgumentTypeError(f"Error parsing --{param_name}: {e}")
+
+    args.img_mean = _process_norm_param(args.img_mean, "img-mean")
+    args.img_std = _process_norm_param(args.img_std, "img-std")
     main(args)
